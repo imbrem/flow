@@ -37,7 +37,7 @@ module fpga_top(
   wire[15:0] errorbit;
 
   wire[255:0] registers;
-  wire[512:0] display;
+  wire[255:0] display;
   wire[15:0] alu_output;
   wire[15:0] alu_word;
   wire[15:0] alu_a_altern;
@@ -82,9 +82,11 @@ module fpga_top(
     .alu_store_to_mem(alu_store_to_mem),
     .alu_store_to_stk(alu_store_to_stk));
 
-  assign display[255:0] = registers;
+  wire[15:0] slice;
 
-  wire[15:0] slice = display[16*offset +: 16];
+  register_selector display_selector(
+      offset[3:0], offset[4] ? display : registers, slice
+    );
 
   hex_decoder h0(slice[3:0], HEX0);
   hex_decoder h1(slice[7:4], HEX1);
