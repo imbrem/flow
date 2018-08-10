@@ -49,6 +49,7 @@ module controlpath(
     .signflag(signflag),
     .overflow(overflow),
     .errorbit(errorbit),
+    .switches(switches),
     .program_counter_increment(increment),
     .alu_op(alu_op),
     .alu_a_altern(alu_a_altern),

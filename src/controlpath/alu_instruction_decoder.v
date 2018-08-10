@@ -4,6 +4,7 @@ module alu_instruction_decoder(
     input[15:0] signflag,
     input[15:0] overflow,
     input[15:0] errorbit,
+    input[15:0] switches,
     output program_counter_increment,
     output[3:0] alu_op,
     output[15:0] alu_a_altern,
@@ -32,6 +33,11 @@ module alu_instruction_decoder(
         .overflow(overflow),
         .errorbit(errorbit),
         .control_word(jump_control_word));
+
+    null_instruction_decoder null_decoder(
+        .instruction(instruction[11:0]),
+        .switches(switches),
+        .control_word(null_control_word));
 
     control_word_selector S(
       .selector(instruction[15:12]),
