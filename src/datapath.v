@@ -36,6 +36,22 @@ module datapath(
   output reg[255:0] registers
   );
 
+  wire[15:0] selected_a;
+  wire[15:0] selected_b;
+  wire alu_ofl;
+  wire alu_err;
+
+  ALU A(
+    .alu_op(alu_op),
+    .a(alu_a_source ? alu_a_altern : selected_a),
+    .b(alu_b_source ? alu_b_altern : selected_b),
+    .c(alu_output),
+    .ofl(alu_ofl),
+    .err(alu_err));
+
+  register_selector a_selector(alu_a_select, registers, selected_a);
+  register_selector b_selector(alu_b_select, registers, selected_b);
+
   wire[255:0] register_uvs;
 
   always @(negedge clock) begin
