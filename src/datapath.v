@@ -53,6 +53,9 @@ module datapath(
   register_selector b_selector(alu_b_select, registers, selected_b);
   register_selector c_selector(alu_out_select, registers, selected_c);
 
+  zeroflag_generator Z(registers, zeroflag);
+  signflag_generator S(registers, signflag);
+
   wire[255:0] register_uvs;
   wire[15:0] overflow_uv;
   wire[15:0] errorbit_uv;
