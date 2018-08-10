@@ -19,6 +19,7 @@ module null_instruction_decoder(
     ujmp = 4'b0000, // Unconditional jump
     ldsw = 4'b0001, // Switch arithmetic to register
     dvga = 4'b0010, // Display VGA (color, coordinate) (not handled here)
+    swcl = 4'b0011, // Switch clock (not handled here)
 
     // RESERVED
 
