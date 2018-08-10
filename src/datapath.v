@@ -61,14 +61,21 @@ module datapath(
   wire[15:0] errorbit_uv;
 
   always @(negedge clock) begin
-    registers[255:16] = register_uvs[255:16];
-    registers[15:0] = register_uvs[15:0] + program_counter_increment;
-    if(alu_load_src != 2'b00) begin
-      overflow[alu_out_select] = alu_ofl;
-      errorbit[alu_out_select] = alu_err;
+    if(!resetn) begin
+      registers = 256'b0;
+      overflow = 16'b0;
+      errorbit = 16'b0;
     end
-    overflow = overflow_uv;
-    errorbit = errorbit_uv;
+    else begin
+      registers[255:16] = register_uvs[255:16];
+      registers[15:0] = register_uvs[15:0] + program_counter_increment;
+      if(alu_load_src != 2'b00) begin
+        overflow[alu_out_select] = alu_ofl;
+        errorbit[alu_out_select] = alu_err;
+      end
+      overflow = overflow_uv;
+      errorbit = errorbit_uv;
+    end
   end
 
   wire[15:0] at_memory;
