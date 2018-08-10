@@ -38,6 +38,10 @@ module controlpath(
   wire[1:0] load_src;
   wire store_to_mem;
   wire store_to_stk;
+  wire increment;
+  reg next_instruction;
+
+  assign program_counter_increment = next_instruction & increment;
 
   alu_instruction_decoder A(
     .instruction(current_instruction),
@@ -45,7 +49,7 @@ module controlpath(
     .signflag(signflag),
     .overflow(overflow),
     .errorbit(errorbit),
-    .program_counter_increment(program_counter_increment),
+    .program_counter_increment(increment),
     .alu_op(alu_op),
     .alu_a_altern(alu_a_altern),
     .alu_b_altern(alu_b_altern),
@@ -59,10 +63,62 @@ module controlpath(
     .alu_store_to_stk(store_to_stk)
     );
 
-    always @(*) begin
-      alu_load_src = load_src;
-      alu_store_to_mem = store_to_mem;
-      alu_store_to_stk = store_to_stk;
-    end
+  localparam stopped = 3'b000, stopped_low = 3'b001, started  =3'b010,
+    wait_read = 3'b011, wait_write = 3'b100;
+
+  wire needs_read = alu_load_src[1];
+  wire needs_write = alu_store_to_stk | alu_store_to_mem;
+
+  wire to_stopped = switch_clock;
+
+  reg[2:0] current_state;
+  reg[2:0] next_state;
+
+  always @(*) begin: state_table
+    case(current_state)
+      stopped: next_state = user_clock ? stopped : stopped_low;
+      stopped_low: next_state = user_clock ? started : stopped_low;
+      started: begin
+        if(needs_read) next_state = wait_read;
+        else if(needs_write) next_state = wait_write;
+        else if(to_stopped) next_state = stopped;
+        else next_state = started;
+      end
+      wait_read: begin
+        if(needs_write) next_state = wait_write;
+        else if(to_stopped) next_state = stopped;
+        else next_state = started;
+      end
+      wait_write: next_state = to_stopped ? stopped : started;
+    endcase
+  end
+
+  always @(*) begin: enable_signals
+    case(current_state)
+      started: begin
+        next_instruction = ~needs_read & ~needs_write;
+      end
+      wait_read: begin
+        next_instruction = ~needs_write;
+      end
+      wait_write: begin
+        next_instruction = 1'b1;
+      end
+      default: begin
+        next_instruction = 1'b0;
+      end
+    endcase
+  end
+
+  always @(negedge clock) begin: state_FFs
+    if(resetn) current_state = next_state;
+    else current_state = stopped;
+  end
+
+  always @(*) begin
+    alu_load_src = load_src;
+    alu_store_to_mem = store_to_mem;
+    alu_store_to_stk = store_to_stk;
+  end
 
 endmodule
