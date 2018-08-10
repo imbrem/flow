@@ -40,12 +40,27 @@ module null_instruction_decoder(
   wire is_stack = null_opcode[1] & null_opcode[3];
   wire is_store = null_opcode[2] & null_opcode[3];
 
+  alu_control_word_encoder noop_encoder(
+    .program_counter_increment(1'b1),
+    .alu_op(4'hx),
+    .alu_a_altern(16'hxxxx),
+    .alu_b_altern(16'hxxxx),
+    .alu_a_select(4'hx),
+    .alu_b_select(4'hx),
+    .alu_a_source(1'bx),
+    .alu_b_source(1'bx),
+    .alu_out_select(4'hx),
+    .alu_load_src(2'b00),
+    .alu_store_to_mem(1'b0),
+    .alu_store_to_stk(1'b0),
+    .control_word(ujmp_word));
+
 	/*
   unconditional_jump_decoder jump_decoder(
     .instruction(instruction),
     .control_word(ujmp_word));
 	*/
-	 
+
   alu_control_word_encoder null_encoder(
       .program_counter_increment(1'b1),
       .alu_op(alu_opcode),
