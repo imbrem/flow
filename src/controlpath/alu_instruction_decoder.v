@@ -25,6 +25,14 @@ module alu_instruction_decoder(
 
     wire[54:0] control_word;
 
+    jump_instruction_decoder jump_decoder(
+        .instruction(instruction[11:0]),
+        .zeroflag(zeroflag),
+        .signflag(signflag),
+        .overflow(overflow),
+        .errorbit(errorbit),
+        .control_word(jump_control_word));
+
     control_word_selector S(
       .selector(instruction[15:12]),
       .null_control_word(null_control_word),
