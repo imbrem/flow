@@ -175,9 +175,9 @@ module null_instruction_tb();
       $display("WMEM 0 1 reading A from altern");
     if(alu_b_source != 4'b0)
       $display("WMEM 0 1 reading B from altern");
-    if(alu_out_select != 4'h1)
-      $display("WMEM 0 1 generates incorrect selection for ALU C (expected 1, got %h)", alu_out_select);
-    if(alu_load_src != 2'b01) $display("WMEM 0 1 has incorrect load mode (expected 01, got %b)", alu_load_src);
+    if(alu_out_select != 4'h0)
+      $display("WMEM 0 1 generates incorrect selection for ALU C (expected 0, got %h)", alu_out_select);
+    if(alu_load_src != 2'b00) $display("WMEM 0 1 has incorrect load mode (expected 00, got %b)", alu_load_src);
     if(alu_store_to_stk) $display("WMEM 0 1 stores to stack");
     if(~alu_store_to_mem) $display("WMEM 0 1 does not store to memory");
 
@@ -191,9 +191,9 @@ module null_instruction_tb();
       $display("WMOF 0 1 reading A from altern");
     if(alu_b_source != 4'b0)
       $display("WMOF 0 1 reading B from altern");
-    if(alu_out_select != 4'h1)
-      $display("WMOF 0 1 generates incorrect selection for ALU C (expected 1, got %h)", alu_out_select);
-    if(alu_load_src != 2'b01) $display("WMOF 0 1 has incorrect load mode (expected 01, got %b)", alu_load_src);
+    if(alu_out_select != 4'h0)
+      $display("WMOF 0 1 generates incorrect selection for ALU C (expected 0, got %h)", alu_out_select);
+    if(alu_load_src != 2'b00) $display("WMOF 0 1 has incorrect load mode (expected 00, got %b)", alu_load_src);
     if(alu_store_to_stk) $display("WMOF 0 1 stores to stack");
     if(~alu_store_to_mem) $display("WMOF 0 1 does not store to memory");
 
@@ -237,9 +237,9 @@ module null_instruction_tb();
       $display("WSTK 0 1 reading A from altern");
     if(alu_b_source != 4'b0)
       $display("WSTK 0 1 reading B from altern");
-    if(alu_out_select != 4'h1)
-      $display("WSTK 0 1 generates incorrect selection for ALU C (expected 1, got %h)", alu_out_select);
-    if(alu_load_src != 2'b01) $display("WSTK 0 1 has incorrect load mode (expected 01, got %b)", alu_load_src);
+    if(alu_out_select != 4'h0)
+      $display("WSTK 0 1 generates incorrect selection for ALU C (expected 0, got %h)", alu_out_select);
+    if(alu_load_src != 2'b00) $display("WSTK 0 1 has incorrect load mode (expected 00, got %b)", alu_load_src);
     if(~alu_store_to_stk) $display("WSTK 0 1 does not store to stack");
     if(alu_store_to_mem) $display("WSTK 0 1 stores to memory");
 
@@ -253,9 +253,9 @@ module null_instruction_tb();
       $display("WSOF 0 1 reading A from altern");
     if(alu_b_source != 4'b0)
       $display("WSOF 0 1 reading B from altern");
-    if(alu_out_select != 4'h1)
-      $display("WSOF 0 1 generates incorrect selection for ALU C (expected 1, got %h)", alu_out_select);
-    if(alu_load_src != 2'b01) $display("WSOF 0 1 has incorrect load mode (expected 01, got %b)", alu_load_src);
+    if(alu_out_select != 4'h0)
+      $display("WSOF 0 1 generates incorrect selection for ALU C (expected 0, got %h)", alu_out_select);
+    if(alu_load_src != 2'b00) $display("WSOF 0 1 has incorrect load mode (expected 00, got %b)", alu_load_src);
     if(~alu_store_to_stk) $display("WSOF 0 1 does not store to stack");
     if(alu_store_to_mem) $display("WSOF 0 1 stores to memory");
 

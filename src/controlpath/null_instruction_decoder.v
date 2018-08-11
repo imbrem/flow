@@ -72,10 +72,10 @@ module null_instruction_decoder(
       .alu_b_select(instruction[3:0]),
       .alu_a_source(null_opcode == ldsw),
       .alu_b_source(1'b0),
-      .alu_out_select(instruction[3:0]),
+      .alu_out_select(is_store ? instruction[7:4] : instruction[3:0]),
       .alu_load_src(
         is_memop ?
-          {~is_store, is_stack | is_store} : {1'b0, null_opcode == ldsw}
+          {~is_store, is_stack & ~is_store} : {1'b0, null_opcode == ldsw}
         ),
       .alu_store_to_mem(~is_stack & is_store),
       .alu_store_to_stk(is_stack & is_store),
