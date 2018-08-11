@@ -36,10 +36,11 @@ module null_instruction_decoder(
   assign control_word = (null_opcode == ujmp) ? ujmp_word : null_word;
   assign memory_alu_opcode = null_opcode[0] ? inst_iadd : inst_left;
   assign alu_opcode = (null_opcode == ldsw) ?
-    memory_alu_opcode : instruction[7:4];
+    instruction[7:4] : memory_alu_opcode;
 
-  wire is_stack = null_opcode[1] & null_opcode[3];
-  wire is_store = null_opcode[2] & null_opcode[3];
+  wire is_memop = null_opcode[3];
+  wire is_stack = null_opcode[1] & is_memop;
+  wire is_store = null_opcode[2] & is_memop;
 
   alu_control_word_encoder noop_encoder(
     .program_counter_increment(1'b1),
@@ -73,8 +74,8 @@ module null_instruction_decoder(
       .alu_b_source(1'b0),
       .alu_out_select(instruction[3:0]),
       .alu_load_src(
-        null_opcode[3] ?
-          {is_store, is_stack | ~is_store} : {1'b0, null_opcode == ldsw}
+        is_memop ?
+          {~is_store, is_stack | is_store} : {1'b0, null_opcode == ldsw}
         ),
       .alu_store_to_mem(~is_stack & is_store),
       .alu_store_to_stk(is_stack & is_store),

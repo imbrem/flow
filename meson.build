@@ -9,3 +9,16 @@ custom_target('alu_tb',
               install : true,
               install_dir : ''
   )
+
+custom_target('null_instruction_tb',
+              input : [
+                'test/controlpath/null_instruction_tb.v',
+                'src/controlpath/alu_control_word_decoder.v',
+                'src/controlpath/alu_control_word_encoder.v',
+                'src/controlpath/null_instruction_decoder.v'
+                ],
+              output : ['null_instruction_tb'],
+              command : [simulator, '@INPUT@', '-o', '@OUTPUT@'],
+              install : true,
+              install_dir : ''
+  )
