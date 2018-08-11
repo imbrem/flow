@@ -28,6 +28,24 @@ module datapath_tb();
   wire[6:0] vga_y;
   wire[255:0] registers;
 
+  wire[15:0] reg0 = registers[15:0];
+  wire[15:0] reg1 = registers[31:16];
+  wire[15:0] reg2 = registers[47:32];
+  wire[15:0] reg3 = registers[63:48];
+  wire[15:0] reg4 = registers[79:64];
+  wire[15:0] reg5 = registers[95:80];
+  wire[15:0] reg6 = registers[111:96];
+  wire[15:0] reg7 = registers[127:112];
+  wire[15:0] reg8 = registers[143:128];
+  wire[15:0] reg9 = registers[159:144];
+  wire[15:0] regA = registers[175:160];
+  wire[15:0] regB = registers[191:176];
+  wire[15:0] regC = registers[207:192];
+  wire[15:0] regD = registers[223:208];
+  wire[15:0] regE = registers[239:224];
+  wire[15:0] regF = registers[255:240];
+
+
 datapath D(
   .resetn(resetn),
   .clock(clock),
@@ -83,6 +101,8 @@ datapath D(
 
     #6;
 
+    if(registers != 256'b0) $display("Registers not initialized to zero");
+
     // Try setting register 7 to 0 + 2
     resetn = 1'b1;
     program_counter_increment = 1'b1;
@@ -90,7 +110,7 @@ datapath D(
     alu_a_select = 4'h7;
     alu_b_select = 4'hx;
     alu_a_altern = 16'hxxxx;
-    alu_b_altern = 16'h7;
+    alu_b_altern = 16'h2;
     alu_a_source = 1'b0;
     alu_b_source = 1'b1;
     alu_out_select = 4'h7;
@@ -98,7 +118,13 @@ datapath D(
 
     #4;
 
+    if(reg7 != 16'h2)
+      $display("Register 7 not set properly (got %h, expected 2)", reg7);
+    if(reg0 != 16'h1)
+      $display("Program counter not incremented properly (got %h, expected 1)", reg0);
+
     $finish;
+
   end
 
 endmodule

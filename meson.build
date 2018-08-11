@@ -23,6 +23,19 @@ custom_target('null_instruction_tb',
               install_dir : ''
   )
 
+custom_target('jump_instruction_tb',
+              input : [
+                'test/controlpath/jump_instruction_tb.v',
+                'src/controlpath/alu_control_word_decoder.v',
+                'src/controlpath/alu_control_word_encoder.v',
+                'src/controlpath/jump_instruction_decoder.v'
+                ],
+              output : ['jump_instruction_tb'],
+              command : [simulator, '@INPUT@', '-o', '@OUTPUT@'],
+              install : true,
+              install_dir : ''
+  )
+
 custom_target('memory_tb',
               input : [
                 'test/datapath/memory_tb.v',
