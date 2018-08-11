@@ -64,3 +64,15 @@ custom_target('datapath_tb',
               install : true,
               install_dir : ''
   )
+
+  custom_target('flag_tb',
+                input : [
+                  'test/datapath/flag_tb.v',
+                  'src/datapath/signflag_generator.v',
+                  'src/datapath/zeroflag_generator.v'
+                  ],
+                output : ['flag_tb'],
+                command : [simulator, '@INPUT@', '-o', '@OUTPUT@'],
+                install : true,
+                install_dir : ''
+    )

@@ -5,7 +5,7 @@ module zeroflag_generator(
  genvar i;
  generate
  for(i = 0; i < 16; i = i + 1) begin: zeroflag_gen
-	assign zeroflag[i] = |registers[16*i +: 16];
+	assign zeroflag[i] = ~(|registers[16*i +: 16]);
  end
  endgenerate
 

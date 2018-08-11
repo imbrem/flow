@@ -21,7 +21,7 @@ module fpga_top(
   reg[15:0] switch_register;
   reg[4:0] offset;
   reg clock_lock;
-  
+
   assign LEDR[9] = clock_lock;
   assign LEDR[8] = |switch_register;
 
@@ -48,6 +48,7 @@ module fpga_top(
   wire alu_b_source;
   wire alu_store_to_mem;
   wire alu_store_to_stk;
+  wire[1:0] alu_load_src;
   wire[15:0] current_instruction;
   wire program_counter_increment;
   wire vga_plot;
@@ -55,18 +56,22 @@ module fpga_top(
   wire[14:0] vga_color;
   wire[7:0] vga_x;
   wire[6:0] vga_y;
-  
+
   wire[255:0] display = {
-	128'b0,
-	{9'b0, vga_y},
-	{8'b0, vga_x},
-	{1'b0, vga_color},
-	alu_output,
-	alu_b_altern,
-	alu_a_altern,
-	alu_word,
-	current_instruction,
-	switch_register
+   16'b0,
+   errorbit,
+   overflow,
+   signflag,
+  	zeroflag,
+  	{9'b0, vga_y},
+  	{8'b0, vga_x},
+  	{1'b0, vga_color},
+  	alu_output,
+  	alu_b_altern,
+  	alu_a_altern,
+  	alu_word,
+  	current_instruction,
+  	switch_register
   };
 
   flow F(
@@ -95,7 +100,8 @@ module fpga_top(
     .alu_b_source(alu_b_source),
     .alu_output(alu_output),
     .alu_store_to_mem(alu_store_to_mem),
-    .alu_store_to_stk(alu_store_to_stk));
+    .alu_store_to_stk(alu_store_to_stk),
+	 .alu_load_src(alu_load_src));
 
   wire[15:0] slice;
 
@@ -110,14 +116,14 @@ module fpga_top(
   hex_decoder h5({3'b0, offset[4]}, HEX5);
 
   wire[7:0] switch_view = top_select ? switch_register[7:0] : switch_register[15:8];
-  wire[7:0] flag_slice = {alu_a_source, 
-								  alu_b_source, 
-								  alu_store_to_mem, 
+  wire[7:0] flag_slice = {alu_a_source,
+								  alu_b_source,
+								  alu_store_to_mem,
 								  alu_store_to_stk,
-								  |errorbit,
-								  |overflow,
+								  alu_load_src,
 								  switch_clock,
-								  user_clock};
+								  user_clock,
+								  };
   assign LEDR[7:0] = special ? flag_slice : switch_view;
 
 
