@@ -33,3 +33,21 @@ custom_target('memory_tb',
               install : true,
               install_dir : ''
   )
+
+custom_target('datapath_tb',
+              input : [
+                'test/datapath/datapath_tb.v',
+                'src/datapath/memory.v',
+                'src/datapath/alu.v',
+                'src/datapath/signflag_generator.v',
+                'src/datapath/zeroflag_generator.v',
+                'src/components/bit_updater.v',
+                'src/components/register_selector.v',
+                'src/components/register_updater.v',
+                'src/datapath.v'
+                ],
+              output : ['datapath_tb'],
+              command : [simulator, '@INPUT@', '-o', '@OUTPUT@'],
+              install : true,
+              install_dir : ''
+  )

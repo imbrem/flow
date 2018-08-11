@@ -92,8 +92,9 @@ module datapath(
       .at_memory(at_memory),
       .at_stack(at_stack));
 
-  wire[15:0] address_value = alu_out_select[0] ? at_stack : at_memory;
-  wire[15:0] update_value = alu_out_select[1] ? address_value : alu_output;
+  wire non_register = alu_load_src[1];
+  wire[15:0] address_value = alu_load_src[0] ? at_stack : at_memory;
+  wire[15:0] update_value = non_register ? address_value : alu_output;
 
   register_updater R(
     .select(alu_out_select),
