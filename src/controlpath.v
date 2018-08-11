@@ -27,8 +27,8 @@ module controlpath(
   // ALU output controller
   output[3:0] alu_out_select, // Destination register
   output reg[1:0] alu_load_src, // Load source (self, alu, mem, stk)
-  output reg alu_store_to_mem, // Store reg[C] to mem[ALU]
-  output reg alu_store_to_stk, // Store reg[C] to stk[ALU]
+  output alu_store_to_mem, // Store reg[C] to mem[ALU]
+  output alu_store_to_stk, // Store reg[C] to stk[ALU]
   // VGA driver
   output[3:0] vga_color_select,
   output[3:0] vga_coord_select,
@@ -36,8 +36,6 @@ module controlpath(
   output vga_resetn);
 
   wire[1:0] load_src;
-  wire store_to_mem;
-  wire store_to_stk;
   wire increment;
   reg next_instruction;
 
@@ -60,8 +58,8 @@ module controlpath(
     .alu_b_source(alu_b_source),
     .alu_out_select(alu_out_select),
     .alu_load_src(load_src),
-    .alu_store_to_mem(store_to_mem),
-    .alu_store_to_stk(store_to_stk)
+    .alu_store_to_mem(alu_store_to_mem),
+    .alu_store_to_stk(alu_store_to_stk)
     );
 
   localparam stopped = 3'b000, stopped_low = 3'b001, started  =3'b010,
@@ -95,18 +93,22 @@ module controlpath(
   end
 
   always @(*) begin: enable_signals
+    alu_load_src = load_src;
     case(current_state)
       started: begin
         next_instruction = ~needs_read & ~needs_write;
+        if(~next_instruction) alu_load_src = 2'b00;
       end
       wait_read: begin
         next_instruction = ~needs_write;
+        if(~next_instruction) alu_load_src = 2'b00;
       end
       wait_write: begin
         next_instruction = 1'b1;
       end
       default: begin
         next_instruction = 1'b0;
+        alu_load_src = 2'b00;
       end
     endcase
   end
@@ -114,12 +116,6 @@ module controlpath(
   always @(negedge clock) begin: state_FFs
     if(resetn) current_state = next_state;
     else current_state = stopped;
-  end
-
-  always @(*) begin
-    alu_load_src = load_src;
-    alu_store_to_mem = store_to_mem;
-    alu_store_to_stk = store_to_stk;
   end
 
 endmodule
