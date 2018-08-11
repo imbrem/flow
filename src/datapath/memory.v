@@ -5,23 +5,39 @@ module memory(
   input[15:0] value,
   input memory_store_enable,
   input stack_store_enable,
-  output reg[15:0] current_instruction,
-  output reg[15:0] at_memory,
-  output reg[15:0] at_stack);
+  output[15:0] current_instruction,
+  output[15:0] at_memory,
+  output[15:0] at_stack);
 
   `ifdef VERILATOR
+    `define mock_memory
+  `endif
+
+  `ifdef __ICARUS__
+    `define mock_memory
+  `endif
+
+  `ifdef mock_memory
 
   reg[65535:0] memory[15:0];
   reg[65535:0] stack[15:0];
+
+  reg[15:0] reg_at_memory;
+  reg[15:0] reg_at_stack;
+  reg[15:0] reg_current_instruction;
+
+  assign at_memory = reg_at_memory;
+  assign at_stack = reg_at_stack;
+  assign current_instruction = reg_current_instruction;
 
   // Note the *blocking* assignment. This is intentional, as this component
   // is *not* meant for synthesis!
   always @(posedge clock) begin
     if(memory_store_enable) memory[address] = value;
     if(stack_store_enable) stack[address] = value;
-    at_memory = memory[address];
-    at_stack = stack[address];
-    current_instruction = memory[program_counter];
+    reg_at_memory = memory[address];
+    reg_at_stack = stack[address];
+    reg_current_instruction = memory[program_counter];
   end
 
   `else

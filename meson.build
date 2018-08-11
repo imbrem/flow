@@ -22,3 +22,14 @@ custom_target('null_instruction_tb',
               install : true,
               install_dir : ''
   )
+
+custom_target('memory_tb',
+              input : [
+                'test/datapath/memory_tb.v',
+                'src/datapath/memory.v'
+                ],
+              output : ['memory_tb'],
+              command : [simulator, '@INPUT@', '-o', '@OUTPUT@'],
+              install : true,
+              install_dir : ''
+  )
