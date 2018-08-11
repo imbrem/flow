@@ -43,11 +43,77 @@ module jump_instruction_tb();
       .alu_store_to_mem(alu_store_to_mem),
       .alu_store_to_stk(alu_store_to_stk));
 
+  localparam
+    inst_left = 4'h0,
+    inst_iadd = 4'h1;
+
+  localparam
+    jz = 2'h0,
+    js = 2'h1,
+    jo = 2'h2,
+    je = 2'h3;
 
   initial begin
 
     $dumpfile("jump_instruction_tb.vcd");
     $dumpvars;
+
+    zeroflag = 16'b0101010101010101;
+    signflag = 16'b0;
+    overflow = 16'b0;
+    errorbit = 16'b0;
+
+    instruction = {2'b00, jz, 4'h5, 4'h6};
+
+    #1 if(~program_counter_increment) $display("D-JZ 5 6 jumps");
+    if(alu_op != inst_left) $display("D-JZ 5 6 does not set ALU to LEFT");
+    if(alu_a_select != 4'h6)
+      $display("D-JZ 5 6 sets A to %h (expected 6)", alu_a_select);
+    if(alu_b_select != 4'h0)
+      $display("D-JZ 5 6 sets B to %h (expected 0)", alu_b_select);
+    if(alu_out_select != 4'h0)
+      $display("D-JZ 5 6 sets C to %h (expected 0)", alu_out_select);
+    if(alu_load_src != 2'b00)
+      $display("D-JZ 5 6 writes to program counter");
+
+    instruction = {2'b01, jz, 4'h5, 4'h6};
+
+    #1 if(program_counter_increment) $display("D-JNZ 5 6 does not jump");
+    if(alu_op != inst_left) $display("D-JNZ 5 6 does not set ALU to LEFT");
+    if(alu_a_select != 4'h6)
+      $display("D-JNZ 5 6 sets A to %h (expected 6)", alu_a_select);
+    if(alu_b_select != 4'h0)
+      $display("D-JNZ 5 6 sets B to %h (expected 0)", alu_b_select);
+    if(alu_out_select != 4'h0)
+      $display("D-JNZ 5 6 sets C to %h (expected 0)", alu_out_select);
+    if(alu_load_src != 2'b01)
+      $display("D-JNZ 5 6 does not write to program counter");
+
+    instruction = {2'b10, jz, 4'h5, 4'h6};
+
+    #1 if(~program_counter_increment) $display("O-JZ 5 6 jumps");
+    if(alu_op != inst_iadd) $display("O-JZ 5 6 does not set ALU to IADD");
+    if(alu_a_select != 4'h6)
+      $display("O-JZ 5 6 sets A to %h (expected 6)", alu_a_select);
+    if(alu_b_select != 4'h0)
+      $display("O-JZ 5 6 sets B to %h (expected 0)", alu_b_select);
+    if(alu_out_select != 4'h0)
+      $display("O-JZ 5 6 sets C to %h (expected 0)", alu_out_select);
+    if(alu_load_src != 2'b00)
+      $display("O-JZ 5 6 writes to program counter");
+
+    instruction = {2'b11, jz, 4'h5, 4'h6};
+
+    #1 if(program_counter_increment) $display("O-JNZ 5 6 does not jump");
+    if(alu_op != inst_iadd) $display("O-JNZ 5 6 does not set ALU to IADD");
+    if(alu_a_select != 4'h6)
+      $display("O-JNZ 5 6 sets A to %h (expected 6)", alu_a_select);
+    if(alu_b_select != 4'h0)
+      $display("O-JNZ 5 6 sets B to %h (expected 0)", alu_b_select);
+    if(alu_out_select != 4'h0)
+      $display("O-JNZ 5 6 sets C to %h (expected 0)", alu_out_select);
+    if(alu_load_src != 2'b01)
+      $display("O-JNZ 5 6 does not write to program counter");
 
     $finish;
 
