@@ -123,7 +123,35 @@ datapath D(
     if(reg0 != 16'h1)
       $display("Program counter not incremented properly (got %h, expected 1)", reg0);
 
-    $finish;
+    // Try jumping to address in register 7 WITH increment
+    alu_op = 4'h0;
+    alu_a_select = 4'h7;
+    alu_b_select = 4'h0;
+    alu_a_altern = 16'hxxxx;
+    alu_b_altern = 16'hxxxx;
+    alu_a_source = 1'b0;
+    alu_b_source = 1'b0;
+    alu_out_select = 4'h0;
+    alu_load_src = 2'b01;
+
+    #4;
+
+    if(reg7 != 16'h2)
+      $display("Register 7 changed (got %h, expected 2)", reg7);
+    if(reg0 != 16'h3)
+      $display("Program counter not set/incremented properly (got %h, expected 3)", reg0);
+
+    // Try jumping to address in register 7 WITHOUT increment
+    program_counter_increment = 1'b0;
+
+    #4;
+
+    if(reg7 != 16'h2)
+      $display("Register 7 changed (got %h, expected 2)", reg7);
+    if(reg0 != 16'h2)
+      $display("Program counter not set properly (got %h, expected 2)", reg0);
+
+    #1 $finish;
 
   end
 
