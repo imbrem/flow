@@ -30,6 +30,12 @@ module memory(
   assign at_stack = reg_at_stack;
   assign current_instruction = reg_current_instruction;
 
+  `ifdef FLOW_MEMORY_INITIALIZER
+  initial begin
+    `FLOW_MEMORY_INITIALIZER
+  end
+  `endif
+
   // Note the *blocking* assignment. This is intentional, as this component
   // is *not* meant for synthesis!
   always @(posedge clock) begin

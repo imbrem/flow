@@ -57,6 +57,25 @@ module fpga_top(
   wire[7:0] vga_x;
   wire[6:0] vga_y;
 
+  `ifdef FLOW_NICER_REGISTER_VIEW
+  wire[15:0] reg0 = registers[15:0];
+  wire[15:0] reg1 = registers[31:16];
+  wire[15:0] reg2 = registers[47:32];
+  wire[15:0] reg3 = registers[63:48];
+  wire[15:0] reg4 = registers[79:64];
+  wire[15:0] reg5 = registers[95:80];
+  wire[15:0] reg6 = registers[111:96];
+  wire[15:0] reg7 = registers[127:112];
+  wire[15:0] reg8 = registers[143:128];
+  wire[15:0] reg9 = registers[159:144];
+  wire[15:0] regA = registers[175:160];
+  wire[15:0] regB = registers[191:176];
+  wire[15:0] regC = registers[207:192];
+  wire[15:0] regD = registers[223:208];
+  wire[15:0] regE = registers[239:224];
+  wire[15:0] regF = registers[255:240];
+  `endif
+
   wire[255:0] display = {
    16'b0,
    errorbit,
@@ -122,7 +141,7 @@ module fpga_top(
 								  alu_store_to_stk,
 								  alu_load_src,
 								  switch_clock,
-								  user_clock,
+								  user_clock
 								  };
   assign LEDR[7:0] = special ? flag_slice : switch_view;
 

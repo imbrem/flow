@@ -169,8 +169,8 @@ module null_instruction_tb();
 
     instruction = {wmem, 4'h0, 4'h1};
     #1 if(alu_op != inst_left) $display("WMEM 0 1 not passing LEFT to ALU");
-    if(alu_a_select != 4'h0)
-      $display("WMEM 0 1 generates incorrect selection for ALU A (expected 0, got %h)", alu_a_select);
+    if(alu_a_select != 4'h1)
+      $display("WMEM 0 1 generates incorrect selection for ALU A (expected 1, got %h)", alu_a_select);
     if(alu_a_source != 4'b0)
       $display("WMEM 0 1 reading A from altern");
     if(alu_b_source != 4'b0)
@@ -183,10 +183,10 @@ module null_instruction_tb();
 
     instruction = {wmof, 4'h0, 4'h1};
     #1 if(alu_op != inst_iadd) $display("WMOF 0 1 not passing IADD to ALU");
-    if(alu_a_select != 4'h0)
-      $display("WMOF 0 1 generates incorrect selection for ALU A (expected 0, got %h)", alu_a_select);
-    if(alu_b_select != 4'h1)
-      $display("WMOF 0 1 generates incorrect selection for ALU B (expected 1, got %h)", alu_b_select);
+    if(alu_a_select != 4'h1)
+      $display("WMOF 0 1 generates incorrect selection for ALU A (expected 1, got %h)", alu_a_select);
+    if(alu_b_select != 4'h0)
+      $display("WMOF 0 1 generates incorrect selection for ALU B (expected 0, got %h)", alu_b_select);
     if(alu_a_source != 4'b0)
       $display("WMOF 0 1 reading A from altern");
     if(alu_b_source != 4'b0)
@@ -231,8 +231,8 @@ module null_instruction_tb();
 
     instruction = {wstk, 4'h0, 4'h1};
     #1 if(alu_op != inst_left) $display("WSTK 0 1 not passing LEFT to ALU");
-    if(alu_a_select != 4'h0)
-      $display("WSTK 0 1 generates incorrect selection for ALU A (expected 0, got %h)", alu_a_select);
+    if(alu_a_select != 4'h1)
+      $display("WSTK 0 1 generates incorrect selection for ALU A (expected 1, got %h)", alu_a_select);
     if(alu_a_source != 4'b0)
       $display("WSTK 0 1 reading A from altern");
     if(alu_b_source != 4'b0)
@@ -245,10 +245,10 @@ module null_instruction_tb();
 
     instruction = {wsof, 4'h0, 4'h1};
     #1 if(alu_op != inst_iadd) $display("WSOF 0 1 not passing IADD to ALU");
-    if(alu_a_select != 4'h0)
-      $display("WSOF 0 1 generates incorrect selection for ALU A (expected 0, got %h)", alu_a_select);
-    if(alu_b_select != 4'h1)
-      $display("WSOF 0 1 generates incorrect selection for ALU B (expected 1, got %h)", alu_b_select);
+    if(alu_a_select != 4'h1)
+      $display("WSOF 0 1 generates incorrect selection for ALU A (expected 1, got %h)", alu_a_select);
+    if(alu_b_select != 4'h0)
+      $display("WSOF 0 1 generates incorrect selection for ALU B (expected 0, got %h)", alu_b_select);
     if(alu_a_source != 4'b0)
       $display("WSOF 0 1 reading A from altern");
     if(alu_b_source != 4'b0)
