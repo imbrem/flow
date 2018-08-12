@@ -62,6 +62,12 @@ module controlpath(
     .alu_store_to_stk(alu_store_to_stk)
     );
 
+  localparam dvga = 4'h2;
+  assign vga_color_select = current_instruction[7:4];
+  assign vga_coord_select = current_instruction[3:0];
+  assign vga_resetn = 1'b0;
+  assign vga_plot = current_instruction[15:8] == {4'h0, dvga};
+
   localparam stopped = 3'b000, stopped_low = 3'b001, started  =3'b010,
     wait_read = 3'b011, wait_write = 3'b100;
 

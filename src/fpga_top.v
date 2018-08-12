@@ -161,4 +161,29 @@ module fpga_top(
     end
   end
 
+  `ifndef mock_memory
+
+  vga_adapter VGA(
+    .resetn(resetn),
+    .clock(CLOCK_50),
+    .colour(vga_color),
+    .x(vga_x),
+    .y(vga_y),
+    .plot(vga_plot),
+    .VGA_R(VGA_R),
+    .VGA_G(VGA_G),
+    .VGA_B(VGA_B),
+    .VGA_HS(VGA_HS),
+    .VGA_VS(VGA_VS),
+    .VGA_BLANK(VGA_BLANK_N),
+    .VGA_SYNC(VGA_SYNC_N),
+    .VGA_CLK(VGA_CLK));
+  defparam VGA.RESOLUTION = "160x120";
+  defparam VGA.MONOCHROME = "FALSE";
+  defparam VGA.BITS_PER_COLOUR_CHANNEL = 5;
+  defparam VGA.BACKGROUND_IMAGE = "black.mif";
+
+
+  `endif
+
 endmodule

@@ -113,6 +113,13 @@ module datapath(
     .r(errorbit),
     .u(errorbit_uv));
 
+  vga_interface V(
+    .registers(registers),
+    .vga_color_select(vga_color_select),
+    .vga_coord_select(vga_coord_select),
+    .vga_color(vga_color),
+    .vga_x(vga_x),
+    .vga_y(vga_y));
 
 
 endmodule
