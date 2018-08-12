@@ -102,11 +102,11 @@ module controlpath(
       wait_read: begin
         next_instruction = ~needs_write;
         if(needs_write) alu_load_src = 2'b00;
-		  else alu_load_src = load_src;
+		    else alu_load_src = load_src;
       end
       wait_write: begin
         next_instruction = 1'b1;
-		  alu_load_src = load_src;
+		    alu_load_src = load_src;
       end
       default: begin
         next_instruction = 1'b0;
@@ -116,8 +116,8 @@ module controlpath(
   end
 
   always @(negedge clock) begin: state_FFs
-    if(resetn) current_state = next_state;
-    else current_state = stopped;
+    if(resetn) current_state <= next_state;
+    else current_state <= stopped;
   end
 
 endmodule
