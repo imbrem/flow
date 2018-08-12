@@ -151,6 +151,31 @@ datapath D(
     if(reg0 != 16'h2)
       $display("Program counter not set properly (got %h, expected 2)", reg0);
 
+    // Try writing what's in register 7 to memory at register 7 (position 2)
+    program_counter_increment = 1'b1;
+    alu_store_to_mem = 1'b1;
+    alu_out_select = 4'h7;
+    alu_load_src = 2'b00;
+
+    #4;
+
+    // Try writing what's in memory at register 7 to register 6
+
+    if(reg7 != 16'h2)
+      $display("Register 7 changed (got %h, expected 2)", reg7);
+
+    alu_load_src = 2'b10;
+    alu_out_select = 4'h6;
+    alu_store_to_mem = 1'b0;
+
+    #4;
+
+    if(reg7 != 16'h2)
+      $display("Register 7 changed (got %h, expected 2)", reg7);
+    if(reg6 != 16'h2)
+      $display("Register 6 not loaded properly (got %h, expected 2)", reg7);
+
+
     #1 $finish;
 
   end
