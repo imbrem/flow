@@ -68,7 +68,7 @@ module controlpath(
   wire needs_read = alu_load_src[1];
   wire needs_write = alu_store_to_stk | alu_store_to_mem;
 
-  wire to_stopped = switch_clock | (current_instruction == 16'h0300);
+  wire to_stopped = clock_lock | switch_clock | (current_instruction == 16'h0300);
 
   reg[2:0] current_state;
   reg[2:0] next_state;
