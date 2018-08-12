@@ -64,5 +64,11 @@ module ALU(
       inst_ftoi: {ofl, c} = {ftoi_ofl, ftoi_result};
     endcase
   end
+  
+  float16_adder fa(
+    .a(a),
+	 .b(b),
+	 .c(fadd_result),
+	 .of(fadd_ofl));
 
 endmodule

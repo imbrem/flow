@@ -121,5 +121,4 @@ module datapath(
     .vga_x(vga_x),
     .vga_y(vga_y));
 
-
 endmodule
