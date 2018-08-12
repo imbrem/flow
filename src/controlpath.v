@@ -65,7 +65,7 @@ module controlpath(
   localparam stopped = 3'b000, stopped_low = 3'b001, started  =3'b010,
     wait_read = 3'b011, wait_write = 3'b100;
 
-  wire needs_read = alu_load_src[1];
+  wire needs_read = load_src[1];
   wire needs_write = alu_store_to_stk | alu_store_to_mem;
 
   wire to_stopped = clock_lock | switch_clock | (current_instruction == 16'h0300);
@@ -93,18 +93,20 @@ module controlpath(
   end
 
   always @(*) begin: enable_signals
-    alu_load_src = load_src;
     case(current_state)
       started: begin
         next_instruction = ~needs_read & ~needs_write;
-        if(~next_instruction) alu_load_src = 2'b00;
+        if(needs_read | needs_write) alu_load_src = 2'b00;
+		  else alu_load_src = load_src;
       end
       wait_read: begin
         next_instruction = ~needs_write;
-        if(~next_instruction) alu_load_src = 2'b00;
+        if(needs_write) alu_load_src = 2'b00;
+		  else alu_load_src = load_src;
       end
       wait_write: begin
         next_instruction = 1'b1;
+		  alu_load_src = load_src;
       end
       default: begin
         next_instruction = 1'b0;
