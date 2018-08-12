@@ -27,7 +27,7 @@ module fpga_top(
 
   wire resetn = KEY[0];
   wire load = ~KEY[1];
-  wire user_clock = ~KEY[2];
+  wire user_clock = KEY[2];
   wire switch_clock = ~KEY[3];
   wire current_clock;
 

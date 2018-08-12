@@ -105,7 +105,7 @@ module controlpath_tb();
 
     // Pulse user clock to start execution
     user_clock = 1'b0;
-    #4;
+    #11;
     user_clock = 1'b1;
 
     #4 if(alu_op != inst_iadd)
@@ -156,8 +156,12 @@ module controlpath_tb();
     if(alu_store_to_stk) $display("Store to stack on stopped clock");
     if(alu_store_to_mem) $display("Store to memory on stopped clock");
 
+    #13;
+
     // Set switches while clock is stopped to, say, IADD 5 6 7
     switches = {inst_iadd, 4'h5, 4'h6, 4'h7};
+
+    #11;
 
     // Update current instruction to NULL SWTR LEFT 5 while clock is stopped
     current_instruction = {inst_null, 4'h1, 4'h0, 4'h5};
@@ -173,6 +177,8 @@ module controlpath_tb();
       $display("Load on stopped clock (mode %b)", alu_load_src);
     if(alu_store_to_stk) $display("Store to stack on stopped clock");
     if(alu_store_to_mem) $display("Store to memory on stopped clock");
+
+    #21;
 
     user_clock = 1'b1;
     #4 if(alu_op != 4'h0)
@@ -251,8 +257,12 @@ module controlpath_tb();
     if(alu_store_to_stk) $display("Store to stack on stopped clock");
     if(alu_store_to_mem) $display("Store to memory on stopped clock");
 
+    #5;
+
     // Set switches while clock is stopped to NULL UJMP 0 0 (noop)
     switches = 16'h0;
+
+    #27;
 
     // Update current instruction to NULL SWTR LEFT 5 while clock is stopped
     current_instruction = {inst_null, 4'h1, 4'h0, 4'h5};
@@ -264,13 +274,13 @@ module controlpath_tb();
 
     // Pulse user clock to restart execution
     user_clock = 1'b0;
-    #4 if(alu_load_src != 2'b00)
+    #11 if(alu_load_src != 2'b00)
       $display("Load on stopped clock (mode %b)", alu_load_src);
     if(alu_store_to_stk) $display("Store to stack on stopped clock");
     if(alu_store_to_mem) $display("Store to memory on stopped clock");
 
     user_clock = 1'b1;
-    #4 if(alu_op != 4'h0)
+    #5 if(alu_op != 4'h0)
       $display("NULL SWTR LEFT 5 does not generate LEFT for ALU (generates %h)", alu_op);
     if(alu_load_src != 2'b01)
       $display("NULL SWTR LEFT 5 generates incorrect load mode (expected 01, got %b)", alu_load_src);
