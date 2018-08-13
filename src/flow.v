@@ -3,8 +3,9 @@ module flow(
   input resetn,
   input clock,
   input user_clock,
-  input switch_clock,
   input clock_lock,
+  output switch_clock,
+  output[2:0] current_state,
   input[15:0] switches,
 
   // State as viewed from the FPGA top
@@ -75,6 +76,7 @@ module flow(
     .user_clock(user_clock),
     .switch_clock(switch_clock),
     .clock_lock(clock_lock),
+    .current_state(current_state),
     .current_instruction(current_instruction),
     .switches(switches),
     .signflag(signflag),

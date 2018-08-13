@@ -28,7 +28,7 @@ module fpga_top(
   wire resetn = KEY[0];
   wire load = ~KEY[1];
   wire user_clock = KEY[2];
-  wire switch_clock = ~KEY[3];
+  wire switch_clock;
   wire current_clock;
 
   wire special = SW[9];
@@ -56,6 +56,7 @@ module fpga_top(
   wire[14:0] vga_color;
   wire[7:0] vga_x;
   wire[6:0] vga_y;
+  wire[2:0] current_state;
 
   `ifdef FLOW_NICER_REGISTER_VIEW
   wire[15:0] reg0 = registers[15:0];
@@ -77,10 +78,10 @@ module fpga_top(
   `endif
 
   wire[255:0] display = {
-   16'b0,
-   errorbit,
-   overflow,
-   signflag,
+    16'b0,
+    errorbit,
+    overflow,
+    signflag,
   	zeroflag,
   	{9'b0, vga_y},
   	{8'b0, vga_x},
@@ -93,13 +94,16 @@ module fpga_top(
   	switch_register
   };
 
+  wire clock = CLOCK_50;
+
   flow F(
     .resetn(resetn),
-    .clock(CLOCK_50),
+    .clock(clock),
     .user_clock(user_clock),
     .switch_clock(switch_clock),
     .clock_lock(clock_lock),
     .switches(switch_register),
+    .current_state(current_state),
     .registers(registers),
     .zeroflag(zeroflag),
     .signflag(signflag),
@@ -135,14 +139,19 @@ module fpga_top(
   hex_decoder h5({3'b0, offset[4]}, HEX5);
 
   wire[7:0] switch_view = top_select ? switch_register[7:0] : switch_register[15:8];
-  wire[7:0] flag_slice = {alu_a_source,
+  wire[15:0] flags = {
+                  alu_a_source,
 								  alu_b_source,
 								  alu_store_to_mem,
 								  alu_store_to_stk,
 								  alu_load_src,
 								  switch_clock,
-								  user_clock
+								  user_clock,
+                  current_state,
+                  program_counter_increment,
+                  6'b0
 								  };
+  wire[7:0] flag_slice = top_select ? flags[15:8] : flags[7:0];
   assign LEDR[7:0] = special ? flag_slice : switch_view;
 
 

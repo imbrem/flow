@@ -3,7 +3,6 @@ module controlpath_tb();
   reg resetn;
   reg clock;
   reg user_clock;
-  reg switch_clock;
   reg clock_lock;
   reg[15:0] current_instruction;
   reg[15:0] zeroflag;
@@ -13,6 +12,7 @@ module controlpath_tb();
   reg[15:0] switches;
 
   wire program_counter_increment;
+  wire switch_clock;
   wire[3:0] alu_op;
   wire[15:0] alu_a_altern;
   wire[15:0] alu_b_altern;
@@ -87,7 +87,6 @@ module controlpath_tb();
     // Reset controlpath
     resetn  = 1'b0;
     user_clock = 1'b1;
-    switch_clock = 1'b0;
     clock_lock = 1'b0;
     current_instruction = 16'b0;
     zeroflag = 16'hFFFF;

@@ -44,10 +44,13 @@ module ALU(
       inst_iadd: {ofl, c} = a + b;
       inst_isub: c = a - b;
       inst_imul: {ofl, c} = a * b;
+		/*
       inst_idiv: begin
         {ofl, c} = a / b;
         err = (b == 0);
       end
+		*/
+		inst_idiv: c = 16'b0;
       inst_fadd: {ofl, c} = {fadd_ofl, fadd_result};
       inst_fsub: {ofl, c} = {fadd_ofl, fadd_result};
       inst_fmul: {ofl, c} = {fmul_ofl, fmul_result};

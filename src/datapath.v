@@ -33,7 +33,7 @@ module datapath(
   output[7:0] vga_x,
   output[6:0] vga_y,
   // Register view
-  output reg[255:0] registers);
+  output[255:0] registers);
 
   wire[15:0] selected_a;
   wire[15:0] selected_b;
@@ -56,23 +56,44 @@ module datapath(
   zeroflag_generator Z(registers, zeroflag);
   signflag_generator S(registers, signflag);
 
-  wire[255:0] register_uvs;
-  wire[15:0] overflow_uv;
-  wire[15:0] errorbit_uv;
+  reg[15:0] register[15:0];
+
+  wire non_register = alu_load_src[1];
+  wire[15:0] address_value = alu_load_src[0] ? at_stack : at_memory;
+  wire[15:0] update_value = non_register ? address_value : alu_output;
+
+  genvar i;
+  generate
+    for(i = 1; i < 16; i = i + 1) begin: general_purpose_register_update
+
+        always @(negedge clock) begin
+          if(!resetn) begin
+            register[i] <= 16'b0;
+          end
+          else if(i == alu_out_select & alu_load_src != 2'b00) begin
+            register[i] = update_value;
+          end
+        end
+
+        assign registers[i*16 +: 16] = register[i];
+
+    end
+  endgenerate
 
   always @(negedge clock) begin
     if(!resetn) begin
-      registers <= 256'b0;
-      overflow <= 16'b0;
-      errorbit <= 16'b0;
+      register[0] = 16'h0;
     end
     else begin
-      registers[255:16] <= register_uvs[255:16];
-      registers[15:0] <= register_uvs[15:0] + program_counter_increment;
-      overflow <= overflow_uv;
-      errorbit <= errorbit_uv;
+      if(4'h0 == alu_out_select & alu_load_src != 2'b00) begin
+        register[0] = update_value + program_counter_increment;
+      end
+      else begin
+        register[0] = register[0] + program_counter_increment;
+      end
     end
   end
+  assign registers[15:0] = register[0];
 
   wire[15:0] at_memory;
   wire[15:0] at_stack;
@@ -87,31 +108,6 @@ module datapath(
       .current_instruction(current_instruction),
       .at_memory(at_memory),
       .at_stack(at_stack));
-
-  wire non_register = alu_load_src[1];
-  wire[15:0] address_value = alu_load_src[0] ? at_stack : at_memory;
-  wire[15:0] update_value = non_register ? address_value : alu_output;
-
-  register_updater R(
-    .select(alu_out_select),
-    .enable(alu_load_src != 2'b00),
-    .value(update_value),
-    .r(registers),
-    .u(register_uvs));
-
-  bit_updater overflow_updater(
-    .select(alu_out_select),
-    .enable(alu_load_src != 2'b00),
-    .value(alu_ofl),
-    .r(overflow),
-    .u(overflow_uv));
-
-  bit_updater errorbit_updater(
-    .select(alu_out_select),
-    .enable(alu_load_src != 2'b00),
-    .value(alu_err),
-    .r(errorbit),
-    .u(errorbit_uv));
 
   vga_interface V(
     .registers(registers),

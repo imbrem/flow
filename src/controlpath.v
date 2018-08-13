@@ -3,8 +3,9 @@ module controlpath(
   // Timing controls
   input clock,
   input user_clock,
-  input switch_clock,
   input clock_lock,
+  output switch_clock,
+  output reg[2:0] current_state,
   // Current instruction
   input[15:0] current_instruction,
   // Switch register
@@ -68,15 +69,15 @@ module controlpath(
   assign vga_resetn = 1'b0;
   assign vga_plot = current_instruction[15:8] == {4'h0, dvga};
 
-  localparam stopped = 3'b000, stopped_low = 3'b001, started  =3'b010,
-    wait_read = 3'b011, wait_write = 3'b100;
+  localparam stopped = 3'b000, stopped_low = 3'b001, started = 3'b010,
+    wait_read = 3'b011, wait_write = 3'b100, wait_buffer = 3'b101;
 
   wire needs_read = load_src[1];
   wire needs_write = alu_store_to_stk | alu_store_to_mem;
 
-  wire to_stopped = clock_lock | switch_clock | (current_instruction == 16'h0300);
+  wire to_stopped = clock_lock  | (current_instruction == 16'h0300);
+  assign switch_clock = to_stopped;
 
-  reg[2:0] current_state;
   reg[2:0] next_state;
 
   always @(*) begin: state_table
@@ -86,15 +87,14 @@ module controlpath(
       started: begin
         if(needs_read) next_state = wait_read;
         else if(needs_write) next_state = wait_write;
-        else if(to_stopped) next_state = stopped;
-        else next_state = started;
+        else next_state = wait_buffer;
       end
       wait_read: begin
         if(needs_write) next_state = wait_write;
-        else if(to_stopped) next_state = stopped;
-        else next_state = started;
+        else next_state = wait_buffer;
       end
-      wait_write: next_state = to_stopped ? stopped : started;
+      wait_write: next_state = wait_buffer;
+      wait_buffer: next_state = to_stopped ? stopped : started;
     endcase
   end
 
