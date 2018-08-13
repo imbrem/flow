@@ -95,10 +95,10 @@ module fpga_top(
   	switch_register
   };
 
-  wire clock26 = counter[25];
-  wire clock25 = counter[24];
-  wire clock24 = counter[23];
-  reg[25:0] counter;
+  wire clock23 = counter[22];
+  wire clock22 = counter[21];
+  wire clock21 = counter[20];
+  reg[22:0] counter;
   reg clock;
 
   always @(posedge CLOCK_50) begin
@@ -108,9 +108,9 @@ module fpga_top(
   always @(*) begin
     case(speed_select)
       2'b00: clock = CLOCK_50;
-      2'b01: clock = clock24;
-      2'b10: clock = clock25;
-      2'b11: clock = clock26;
+      2'b01: clock = clock21;
+      2'b10: clock = clock22;
+      2'b11: clock = clock23;
     endcase
   end
 
