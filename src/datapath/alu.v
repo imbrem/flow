@@ -11,11 +11,11 @@ module ALU(
     inst_iadd = 4'h1,
     inst_isub = 4'h2,
     inst_imul = 4'h3,
-    inst_idiv = 4'h4,
+    inst_tvga = 4'h4,
     inst_fadd = 4'h5,
     inst_fsub = 4'h6,
     inst_fmul = 4'h7,
-    inst_fdiv = 4'h8,
+    inst_bvga = 4'h8,
     inst_band = 4'h9,
     inst_bior = 4'hA,
     inst_bxor = 4'hB,
@@ -44,17 +44,11 @@ module ALU(
       inst_iadd: {ofl, c} = a + b;
       inst_isub: c = a - b;
       inst_imul: {ofl, c} = a * b;
-		/*
-      inst_idiv: begin
-        {ofl, c} = a / b;
-        err = (b == 0);
-      end
-		*/
-		inst_idiv: c = 16'b0;
+		  inst_tvga: c = {a[15:8], b[15:9]};
       inst_fadd: {ofl, c} = {fadd_ofl, fadd_result};
       inst_fsub: {ofl, c} = {fadd_ofl, fadd_result};
       inst_fmul: {ofl, c} = {fmul_ofl, fmul_result};
-      inst_fdiv: {err, c} = {fdiv_err, fdiv_result};
+      inst_bvga: c = {a[7:0], b[6:0]};
       inst_band: c = a & b;
       inst_bior: c = a | b;
       inst_bxor: c = a ^ b;
