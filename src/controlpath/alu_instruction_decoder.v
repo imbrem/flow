@@ -39,19 +39,12 @@ module alu_instruction_decoder(
         .switches(switches),
         .control_word(null_control_word));
 
-    alu_control_word_encoder noop_encoder(
-          .program_counter_increment(1'b1),
-          .alu_op(4'hx),
-          .alu_a_altern(16'hxxxx),
-          .alu_b_altern(16'hxxxx),
-          .alu_a_select(4'hx),
-          .alu_b_select(4'hx),
-          .alu_a_source(1'bx),
-          .alu_b_source(1'bx),
-          .alu_out_select(4'hx),
-          .alu_load_src(2'b00),
-          .alu_store_to_mem(1'b0),
-          .alu_store_to_stk(1'b0),
+    unary_instruction_decoder unary_decoder(
+          .instruction(instruction[11:0]),
+          .zeroflag(zeroflag),
+          .signflag(signflag),
+          .overflow(overflow),
+          .errorbit(errorbit),
           .control_word(unary_control_word));
 
     control_word_selector S(

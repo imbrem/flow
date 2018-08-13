@@ -69,9 +69,13 @@ module datapath(
         always @(negedge clock) begin
           if(!resetn) begin
             register[i] <= 16'b0;
+				overflow[i] <= 1'b0;
+				errorbit[i] <= 1'b0;
           end
           else if(i == alu_out_select & alu_load_src != 2'b00) begin
             register[i] = update_value;
+				overflow[i] = alu_ofl;
+				errorbit[i] = alu_err;
           end
         end
 
@@ -82,14 +86,18 @@ module datapath(
 
   always @(negedge clock) begin
     if(!resetn) begin
-      register[0] = 16'h0;
+      register[0] <= 16'h0;
+		overflow[0] <= 1'b0;
+		errorbit[0] <= 1'b0;
     end
     else begin
       if(4'h0 == alu_out_select & alu_load_src != 2'b00) begin
-        register[0] = update_value + program_counter_increment;
+        register[0] <= update_value + program_counter_increment;
+		  overflow[0] <= alu_ofl;
+		  errorbit[0] <= alu_err;
       end
       else begin
-        register[0] = register[0] + program_counter_increment;
+        register[0] <= register[0] + program_counter_increment;
       end
     end
   end

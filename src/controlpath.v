@@ -70,7 +70,7 @@ module controlpath(
   assign vga_plot = current_instruction[15:8] == {4'h0, dvga};
 
   localparam stopped = 3'b000, stopped_low = 3'b001, started = 3'b010,
-    wait_read = 3'b011, wait_write = 3'b100, wait_buffer = 3'b101;
+    wait_read = 3'b011, wait_write = 3'b100, wait_buffer = 3'b101, wait_load = 3'b111;
 
   wire needs_read = load_src[1];
   wire needs_write = alu_store_to_stk | alu_store_to_mem;
@@ -94,7 +94,9 @@ module controlpath(
         else next_state = wait_buffer;
       end
       wait_write: next_state = wait_buffer;
-      wait_buffer: next_state = to_stopped ? stopped : started;
+		wait_buffer: next_state = wait_load;
+      wait_load: next_state = to_stopped ? stopped : started;
+		default: next_state = stopped;
     endcase
   end
 

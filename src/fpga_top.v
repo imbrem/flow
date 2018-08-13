@@ -20,6 +20,7 @@ module fpga_top(
 
   reg[15:0] switch_register;
   reg[4:0] offset;
+  reg[1:0] speed_select;
   reg clock_lock;
 
   assign LEDR[9] = clock_lock;
@@ -94,7 +95,24 @@ module fpga_top(
   	switch_register
   };
 
-  wire clock = CLOCK_50;
+  wire clock26 = counter[25];
+  wire clock25 = counter[24];
+  wire clock24 = counter[23];
+  reg[25:0] counter;
+  reg clock;
+
+  always @(posedge CLOCK_50) begin
+	counter <= counter + 27'b1;
+  end
+
+  always @(*) begin
+    case(speed_select)
+      2'b00: clock = CLOCK_50;
+      2'b01: clock = clock24;
+      2'b10: clock = clock25;
+      2'b11: clock = clock26;
+    endcase
+  end
 
   flow F(
     .resetn(resetn),
@@ -140,17 +158,17 @@ module fpga_top(
 
   wire[7:0] switch_view = top_select ? switch_register[7:0] : switch_register[15:8];
   wire[15:0] flags = {
-                  alu_a_source,
-								  alu_b_source,
-								  alu_store_to_mem,
-								  alu_store_to_stk,
-								  alu_load_src,
-								  switch_clock,
-								  user_clock,
-                  current_state,
-                  program_counter_increment,
-                  6'b0
-								  };
+							alu_a_source,
+							alu_b_source,
+							alu_store_to_mem,
+							alu_store_to_stk,
+							alu_load_src,
+							switch_clock,
+							user_clock,
+							current_state,
+							program_counter_increment,
+							4'b0
+							};
   wire[7:0] flag_slice = top_select ? flags[15:8] : flags[7:0];
   assign LEDR[7:0] = special ? flag_slice : switch_view;
 
@@ -159,6 +177,7 @@ module fpga_top(
     if(special) begin
       offset <= SW[4:0];
       clock_lock <= SW[5];
+      speed_select <= SW[7:6];
     end
     else if(load) begin
       if(top_select) begin

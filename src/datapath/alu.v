@@ -11,7 +11,7 @@ module ALU(
     inst_iadd = 4'h1,
     inst_isub = 4'h2,
     inst_imul = 4'h3,
-    inst_tvga = 4'h4,
+    inst_vgaa = 4'h4,
     inst_fadd = 4'h5,
     inst_fsub = 4'h6,
     inst_fmul = 4'h7,
@@ -36,6 +36,10 @@ module ALU(
   wire[15:0] ftoi_result;
   wire ftoi_ofl;
 
+  wire[1:0] vgaa_top = a[15] + b[15];
+  wire[6:0] yadd = a[14:8] + b[14:8];
+  wire[7:0] xadd = a[7:0] + b[7:0];
+
   always @(*) begin
     ofl = 1'b0;
     err = 1'b0;
@@ -44,7 +48,7 @@ module ALU(
       inst_iadd: {ofl, c} = a + b;
       inst_isub: c = a - b;
       inst_imul: {ofl, c} = a * b;
-		  inst_tvga: c = {a[15:8], b[15:9]};
+		  inst_vgaa: {ofl, c} = {vgaa_top, yadd, xadd};
       inst_fadd: {ofl, c} = {fadd_ofl, fadd_result};
       inst_fsub: {ofl, c} = {fadd_ofl, fadd_result};
       inst_fmul: {ofl, c} = {fmul_ofl, fmul_result};
