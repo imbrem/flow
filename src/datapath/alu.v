@@ -29,8 +29,6 @@ module ALU(
   wire fadd_ofl;
   wire[15:0] fmul_result;
   wire fmul_ofl;
-  wire[15:0] fdiv_result;
-  wire fdiv_err;
   wire[16:0] itof_input = (alu_op == inst_utof) ? a : {a[15], a};
   wire[15:0] itof_result;
   wire[15:0] ftoi_result;
@@ -65,5 +63,19 @@ module ALU(
       inst_ftoi: {ofl, c} = {ftoi_ofl, ftoi_result};
     endcase
   end
+
+  float16_adder(
+    .a(a),
+    .b(fadd_input_b),
+    .c(fadd_result),
+    .of(fadd_ofl));
+
+  float16_multiplier(
+    .a(a),
+    .b(b),
+    .c(fmul_result),
+    .of(fmul_ofl));
+
+
 
 endmodule

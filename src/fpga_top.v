@@ -102,7 +102,7 @@ module fpga_top(
   reg clock;
 
   always @(posedge CLOCK_50) begin
-	counter <= counter + 27'b1;
+	counter <= counter + 23'b1;
   end
 
   always @(*) begin

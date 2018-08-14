@@ -15,7 +15,7 @@ CONTENT BEGIN
 	00006  :   0000;
 	00007  :   0126; -- MAIN - 1
 
-  -- Hexadecimal digits from A to F
+  -- Hexadecimal digits from 0 to F
 
   00008  :   0002;
 	00009  :   0003;
